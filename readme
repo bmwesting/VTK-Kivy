@@ -1,0 +1,28 @@
+# Integrating VTK into Kivy
+# Contact: Brandt Westing (bmwesting@gmail.com)
+
+This widget will allow you to render a VTK session onto an offscreen framebuffer, which can then be texturized onto a Kivy widget's Canvas element. This method uses a patched version of VTK that included a VTKRenderWindow that does no OpenGL initialization (thanks to Tito).
+
+To make this work, you need to patch VTK and build it. You then need to make the pythonpath variable point to the correct VTK instance (the modified VTK)
+
+Patch VTK:
+git co git://github.com/bmwesting/VTK-Kivy.git
+cd VTK-Kivy
+wget http://www.vtk.org/files/release/5.8/vtk-5.8.0.tar.gz
+tar xvzf ../vtk-5.8.0.tar.gz
+cd VTK
+patch -p1 < ../patch-vtk-embed-opengl-for-vtk-5.4.2.diff
+mkdir build
+cd build
+cmake -i
+
+BUILD_SHARED_LIBS: ON
+USE_EMBED_OGL: ON
+VTK_WRAP_PYTHON: ON
+
+make
+make install
+
+Refer to Mathieu Virbel's original work with pyMT here:
+http://txzone.net/files/contrib/vtk/
+
